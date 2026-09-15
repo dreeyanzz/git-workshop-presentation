@@ -1,0 +1,3888 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Git and GitHub Workshop for Beginners</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* ==========================================================================
+       DESIGN TOKENS & RESET (Edge-to-Edge Full Page Dark Mode)
+       ========================================================================== */
+      :root {
+        --bg-canvas: #090d16;
+        --bg-surface: #0f172a;
+        --bg-card: rgba(15, 23, 42, 0.75);
+        --bg-card-hover: rgba(30, 41, 59, 0.85);
+        --bg-subtle: #1e293b;
+
+        --border-light: rgba(255, 255, 255, 0.08);
+        --border-subtle: rgba(255, 255, 255, 0.14);
+
+        --text-primary: #f8fafc;
+        --text-secondary: #cbd5e1;
+        --text-muted: #94a3b8;
+        --text-faint: #64748b;
+
+        --color-primary: #6366f1;
+        --color-primary-light: rgba(99, 102, 241, 0.15);
+        --color-emerald: #10b981;
+        --color-emerald-light: rgba(16, 185, 129, 0.15);
+        --color-emerald-border: rgba(16, 185, 129, 0.3);
+        --color-blue: #38bdf8;
+        --color-blue-light: rgba(56, 189, 248, 0.15);
+        --color-amber: #f59e0b;
+        --color-amber-light: rgba(245, 158, 11, 0.15);
+
+        --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+        --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.5);
+        --shadow-lg: 0 16px 40px -4px rgba(0, 0, 0, 0.6);
+
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+        --radius-full: 9999px;
+
+        --font-heading:
+          "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+        --font-body: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+        --font-mono: "JetBrains Mono", monospace;
+
+        --transition-smooth: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      html,
+      body {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background-color: var(--bg-canvas);
+        background-image:
+          radial-gradient(
+            at 10% 10%,
+            rgba(99, 102, 241, 0.14) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 90% 90%,
+            rgba(16, 185, 129, 0.1) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 50% 50%,
+            rgba(56, 189, 248, 0.05) 0px,
+            transparent 60%
+          );
+        color: var(--text-primary);
+        font-family: var(--font-body);
+        user-select: none;
+      }
+
+      /* ==========================================================================
+       FULLSCREEN DECK (Zero outer padding, takes whole page)
+       ========================================================================== */
+      .deck-viewport {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .deck-container {
+        width: 100vw;
+        height: 100vh;
+        max-width: 100%;
+        max-height: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        padding: clamp(40px, 6vh, 80px) clamp(48px, 7vw, 120px);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(16px) scale(0.99);
+        transition:
+          opacity 0.35s ease,
+          transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+          visibility 0.35s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow-y: auto;
+        background:
+          radial-gradient(
+            at 80% 20%,
+            rgba(30, 41, 59, 0.4) 0px,
+            transparent 60%
+          ),
+          #090d16;
+      }
+
+      .slide.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+      }
+
+      /* ==========================================================================
+       SLIDE 1: PURE SINGLE-LINE TITLE
+       ========================================================================== */
+      .hero-pure-center {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        height: 100%;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .hero-title-pure {
+        font-size: clamp(38px, 4.8vw, 68px);
+        font-weight: 800;
+        letter-spacing: -0.035em;
+        line-height: 1.18;
+        color: #ffffff;
+        white-space: nowrap;
+      }
+
+      .hero-subtitle-pure {
+        font-size: clamp(20px, 2.4vw, 32px);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        margin-top: 20px;
+        background: linear-gradient(
+          135deg,
+          #818cf8 0%,
+          #38bdf8 50%,
+          #34d399 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* ==========================================================================
+       SLIDE 2: BALANCED 2-COLUMN EDITORIAL AGENDA
+       ========================================================================== */
+      .agenda-split-layout {
+        display: grid;
+        grid-template-columns: 0.9fr 1.45fr;
+        gap: 64px;
+        align-items: center;
+        height: 100%;
+        max-width: 1320px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      .agenda-hero-block {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .agenda-hero-title {
+        font-size: clamp(48px, 5.8vw, 76px);
+        font-weight: 800;
+        letter-spacing: -0.035em;
+        line-height: 1.15;
+        color: #ffffff;
+      }
+
+      .agenda-hero-title span {
+        background: linear-gradient(135deg, #818cf8 0%, #38bdf8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+        padding-bottom: 0.18em;
+        margin-bottom: -0.18em;
+        line-height: 1.25;
+      }
+
+      .agenda-bullets-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        height: 100%;
+        justify-content: center;
+      }
+
+      .agenda-bullet-card {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 18px 24px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+      }
+
+      .agenda-card-num {
+        font-family: var(--font-mono);
+        font-size: 14px;
+        font-weight: 800;
+        color: #818cf8;
+        background: var(--color-primary-light);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        width: 38px;
+        height: 38px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .agenda-card-content {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .agenda-card-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -0.01em;
+      }
+
+      .agenda-card-sub {
+        font-size: 13.5px;
+        color: var(--text-muted);
+        line-height: 1.4;
+      }
+
+      /* ==========================================================================
+       SUBTLE FLOATING HUD (Corner Controls)
+       ========================================================================== */
+      .floating-hud {
+        position: fixed;
+        bottom: 24px;
+        right: 32px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 100;
+        opacity: 0.4;
+        transition: opacity 0.25s ease;
+      }
+
+      .floating-hud:hover {
+        opacity: 1;
+      }
+
+      .floating-section {
+        position: fixed;
+        bottom: 24px;
+        left: 32px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        z-index: 100;
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid var(--border-light);
+        padding: 5px 14px;
+        border-radius: var(--radius-full);
+        backdrop-filter: blur(12px);
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          opacity 0.25s ease,
+          visibility 0.25s ease;
+        user-select: none;
+        pointer-events: none;
+      }
+
+      .floating-section-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #818cf8;
+        box-shadow: 0 0 6px rgba(129, 140, 248, 0.6);
+        display: inline-block;
+        flex-shrink: 0;
+      }
+
+      .floating-counter {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-muted);
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid var(--border-light);
+        padding: 5px 12px;
+        border-radius: var(--radius-full);
+        backdrop-filter: blur(12px);
+      }
+
+      .floating-btn {
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid var(--border-light);
+        color: var(--text-muted);
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(12px);
+        transition: var(--transition-smooth);
+      }
+
+      .floating-btn:hover {
+        background: rgba(30, 41, 59, 0.95);
+        color: var(--text-primary);
+        border-color: var(--border-subtle);
+      }
+
+      .floating-btn svg {
+        width: 15px;
+        height: 15px;
+      }
+
+      /* ==========================================================================
+       TYPOGRAPHY PATTERNS
+       ========================================================================== */
+      .slide-header {
+        margin-bottom: 28px;
+        flex-shrink: 0;
+      }
+
+      .eyebrow {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #818cf8;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .eyebrow::before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #818cf8;
+        box-shadow: 0 0 8px #818cf8;
+      }
+
+      .slide-h1 {
+        font-size: clamp(28px, 3vw, 42px);
+        font-weight: 800;
+        color: var(--text-primary);
+        letter-spacing: -0.03em;
+        line-height: 1.2;
+      }
+
+      .slide-subtitle {
+        font-size: 16px;
+        color: var(--text-muted);
+        margin-top: 6px;
+        font-weight: 400;
+        line-height: 1.5;
+      }
+
+      /* ==========================================================================
+       CARDS & GRIDS
+       ========================================================================== */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 28px;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 28px;
+      }
+
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        flex-direction: column;
+        backdrop-filter: blur(12px);
+        position: relative;
+      }
+
+      .card-icon-wrapper {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        flex-shrink: 0;
+      }
+
+      .card-icon-wrapper.indigo {
+        background: var(--color-primary-light);
+        color: #a5b4fc;
+        border: 1px solid rgba(99, 102, 241, 0.3);
+      }
+
+      .card-icon-wrapper.emerald {
+        background: var(--color-emerald-light);
+        color: #6ee7b7;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+      }
+
+      .card-icon-wrapper.amber {
+        background: var(--color-amber-light);
+        color: #fcd34d;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+      }
+
+      .card-icon-wrapper.blue {
+        background: var(--color-blue-light);
+        color: #7dd3fc;
+        border: 1px solid rgba(56, 189, 248, 0.3);
+      }
+
+      .card-icon-wrapper svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .card-title {
+        font-size: 19px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 10px;
+        letter-spacing: -0.01em;
+      }
+
+      .card-desc {
+        font-size: 15px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+      }
+
+      /* Badges */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 6px;
+        letter-spacing: 0.02em;
+      }
+
+      .badge-indigo {
+        background: var(--color-primary-light);
+        color: #c7d2fe;
+        border: 1px solid rgba(99, 102, 241, 0.3);
+      }
+      .badge-emerald {
+        background: var(--color-emerald-light);
+        color: #a7f3d0;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+      }
+      .badge-amber {
+        background: var(--color-amber-light);
+        color: #fde68a;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+      }
+      .badge-blue {
+        background: var(--color-blue-light);
+        color: #bae6fd;
+        border: 1px solid rgba(56, 189, 248, 0.3);
+      }
+      .badge-slate {
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text-secondary);
+        border: 1px solid var(--border-light);
+      }
+
+      /* Slide 3: Split Canvas Layout (Matches Slide 2) */
+      .drive-split-layout {
+        display: grid;
+        grid-template-columns: 0.9fr 1.45fr;
+        gap: 64px;
+        align-items: center;
+        height: 100%;
+        max-width: 1320px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      .drive-hero-title {
+        font-size: clamp(44px, 5.2vw, 68px);
+        font-weight: 800;
+        letter-spacing: -0.035em;
+        line-height: 1.15;
+        color: #ffffff;
+      }
+
+      .drive-hero-title span {
+        background: linear-gradient(135deg, #818cf8 0%, #38bdf8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+        padding-bottom: 0.18em;
+        margin-bottom: -0.18em;
+        line-height: 1.25;
+      }
+
+      .drive-canvas-content {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .drive-canvas-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 4px;
+      }
+
+      .drive-canvas-title {
+        font-size: 19px;
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: -0.01em;
+      }
+
+      .drive-canvas-sub {
+        font-size: 13px;
+        font-family: var(--font-mono);
+        color: #818cf8;
+        margin-top: 2px;
+      }
+
+      .drive-open-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--color-primary);
+        color: #ffffff;
+        padding: 9px 18px;
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 13.5px;
+        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        flex-shrink: 0;
+        transition: opacity 0.2s ease;
+      }
+
+      .drive-open-btn:hover {
+        opacity: 0.9;
+      }
+
+      .drive-files-list {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+
+      .drive-file-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 18px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+      }
+
+      .drive-category-badge {
+        padding: 6px 10px;
+        border-radius: var(--radius-sm);
+        font-size: 11px;
+        font-weight: 800;
+        font-family: var(--font-mono);
+        letter-spacing: 0.05em;
+        flex-shrink: 0;
+        min-width: 82px;
+        text-align: center;
+      }
+
+      .drive-category-badge.indigo {
+        background: rgba(99, 102, 241, 0.15);
+        color: #a5b4fc;
+        border: 1px solid rgba(99, 102, 241, 0.3);
+      }
+      .drive-category-badge.blue {
+        background: rgba(56, 189, 248, 0.15);
+        color: #7dd3fc;
+        border: 1px solid rgba(56, 189, 248, 0.3);
+      }
+      .drive-category-badge.emerald {
+        background: rgba(16, 185, 129, 0.15);
+        color: #6ee7b7;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+      }
+      .drive-category-badge.amber {
+        background: rgba(245, 158, 11, 0.15);
+        color: #fcd34d;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+      }
+      .drive-category-badge.slate {
+        background: rgba(255, 255, 255, 0.06);
+        color: #cbd5e1;
+        border: 1px solid var(--border-light);
+      }
+
+      .drive-file-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .drive-file-name {
+        font-size: 14.5px;
+        font-weight: 700;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .drive-file-desc {
+        font-size: 12.5px;
+        color: var(--text-muted);
+      }
+
+      .drive-canvas-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-top: 10px;
+        font-size: 13px;
+        color: var(--text-muted);
+        border-top: 1px solid var(--border-light);
+        margin-top: 4px;
+      }
+      .pricing-split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+        height: 100%;
+        align-items: center;
+      }
+
+      .price-card {
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-xl);
+        padding: 48px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .price-card.member {
+        border-color: rgba(16, 185, 129, 0.4);
+        background: linear-gradient(
+          180deg,
+          rgba(16, 185, 129, 0.08) 0%,
+          rgba(15, 23, 42, 0.9) 100%
+        );
+      }
+
+      .big-price-tag {
+        font-size: clamp(60px, 6vw, 84px);
+        font-weight: 800;
+        font-family: var(--font-mono);
+        letter-spacing: -0.04em;
+        margin: 16px 0 8px;
+      }
+
+      .price-card.member .big-price-tag {
+        color: #34d399;
+      }
+      .price-card.standard .big-price-tag {
+        color: var(--text-primary);
+      }
+
+      /* Decision Rules */
+      .rule-box {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+        padding: 26px 32px;
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+        border-left: 4px solid var(--color-primary);
+      }
+
+      .rule-box.emerald {
+        border-left-color: var(--color-emerald);
+      }
+      .rule-box.amber {
+        border-left-color: var(--color-amber);
+      }
+
+      .rule-number {
+        font-family: var(--font-mono);
+        font-size: 14px;
+        font-weight: 800;
+        background: rgba(255, 255, 255, 0.06);
+        padding: 6px 14px;
+        border-radius: var(--radius-sm);
+        color: #818cf8;
+        flex-shrink: 0;
+      }
+
+      /* Role Matrix */
+      .role-grid-spacious {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+
+      .role-group-box {
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+        padding: 26px;
+      }
+
+      .role-group-title {
+        font-size: 13.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #818cf8;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .role-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: var(--radius-sm);
+        margin-bottom: 10px;
+        font-size: 13.5px;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+      }
+
+      .role-item:last-child {
+        margin-bottom: 0;
+      }
+      .role-item-name {
+        font-weight: 600;
+        color: var(--text-secondary);
+      }
+      .role-item-person {
+        font-weight: 700;
+        color: #ffffff;
+        background: rgba(99, 102, 241, 0.2);
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+
+      /* Checklist Dark */
+      .checklist-dark-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .check-dark-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 20px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-size: 14.5px;
+        font-weight: 600;
+        color: var(--text-primary);
+        transition: var(--transition-smooth);
+      }
+
+      .check-dark-item:hover {
+        background: rgba(255, 255, 255, 0.07);
+        border-color: var(--border-subtle);
+      }
+
+      .check-dark-item.completed {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: var(--color-emerald-border);
+        color: #6ee7b7;
+        text-decoration: line-through;
+        opacity: 0.7;
+      }
+
+      .custom-check-box {
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        border: 2px solid var(--border-subtle);
+        background: rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .check-dark-item.completed .custom-check-box {
+        background: var(--color-emerald);
+        border-color: var(--color-emerald);
+        color: #ffffff;
+      }
+
+      .custom-check-box svg {
+        display: none;
+        width: 12px;
+        height: 12px;
+      }
+
+      .check-dark-item.completed .custom-check-box svg {
+        display: block;
+      }
+
+      .disc-status-pill {
+        cursor: pointer;
+        user-select: none;
+        transition: var(--transition-smooth);
+      }
+
+      /* ==========================================================================
+       OVERVIEW MODAL (GRID VIEW)
+       ========================================================================== */
+      .overview-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(3, 7, 18, 0.88);
+        backdrop-filter: blur(14px);
+        z-index: 1000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+      }
+
+      .overview-modal.open {
+        display: flex;
+      }
+
+      .overview-dialog {
+        background: #0f172a;
+        width: 100%;
+        max-width: 1120px;
+        max-height: 85vh;
+        border-radius: var(--radius-xl);
+        padding: 32px;
+        border: 1px solid var(--border-subtle);
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .overview-dialog-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border-light);
+      }
+
+      .overview-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        overflow-y: auto;
+        padding: 4px;
+      }
+
+      .overview-thumb {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        padding: 16px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 110px;
+      }
+
+      .overview-thumb:hover {
+        border-color: #818cf8;
+        background: rgba(99, 102, 241, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .overview-thumb.active {
+        border-color: #818cf8;
+        background: rgba(99, 102, 241, 0.2);
+      }
+
+      .overview-thumb-num {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 700;
+        color: #818cf8;
+      }
+
+      .overview-thumb-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.35;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .hero-title-pure {
+          white-space: normal;
+        }
+        .agenda-split-layout {
+          grid-template-columns: 1fr;
+          gap: 28px;
+        }
+        .slide {
+          padding: 32px 36px;
+        }
+        .grid-2,
+        .grid-3,
+        .role-grid-spacious,
+        .pricing-split,
+        .checklist-dark-grid {
+          grid-template-columns: 1fr;
+        }
+        .overview-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Fullscreen Main Viewport (Edge-to-edge) -->
+    <main class="deck-viewport">
+      <div class="deck-container">
+<!-- ==========================================
+           SLIDE 1: PURE SINGLE-LINE TITLE
+           ========================================== -->
+        <section class="slide active" data-slide="1">
+          <div class="hero-pure-center">
+            <h1 class="hero-title-pure">
+              Git and GitHub Workshop for Beginners
+            </h1>
+            <p class="hero-subtitle-pure">2nd meeting</p>
+          </div>
+        </section>
+
+<!-- ==========================================
+           SLIDE 2: TODAY'S AGENDA (BALANCED 2-COLUMN)
+           ========================================== -->
+        <section class="slide" data-slide="2">
+          <div class="agenda-split-layout">
+            <!-- Left Hero Block -->
+            <div class="agenda-hero-block">
+              <h2 class="agenda-hero-title">Today's <span>Agenda</span></h2>
+            </div>
+
+            <!-- Right Content Cards -->
+            <div class="agenda-bullets-list">
+              <div class="agenda-bullet-card">
+                <div class="agenda-card-num">01</div>
+                <div class="agenda-card-content">
+                  <div class="agenda-card-title">Introduction</div>
+                  <div class="agenda-card-sub">
+                    Google Drive repository, member participation, and
+                    decision-making rules
+                  </div>
+                </div>
+              </div>
+
+              <div class="agenda-bullet-card">
+                <div class="agenda-card-num">02</div>
+                <div class="agenda-card-content">
+                  <div class="agenda-card-title">Event Lifecycle</div>
+                  <div class="agenda-card-sub">
+                    Step-by-step breakdown: what happens before, during, and
+                    after the workshop
+                  </div>
+                </div>
+              </div>
+
+              <div class="agenda-bullet-card">
+                <div class="agenda-card-num">03</div>
+                <div class="agenda-card-content">
+                  <div class="agenda-card-title">Project Updates</div>
+                  <div class="agenda-card-sub">
+                    Event title, registration pricing (₱35 / ₱50), and lab
+                    software setup
+                  </div>
+                </div>
+              </div>
+
+              <div class="agenda-bullet-card">
+                <div class="agenda-card-num">04</div>
+                <div class="agenda-card-content">
+                  <div class="agenda-card-title">Roles & Assignments</div>
+                  <div class="agenda-card-sub">
+                    Committee staffing across technical setup, stage hosting,
+                    floor support, and docs
+                  </div>
+                </div>
+              </div>
+
+              <div class="agenda-bullet-card">
+                <div class="agenda-card-num">05</div>
+                <div class="agenda-card-content">
+                  <div class="agenda-card-title">Next Meeting</div>
+                  <div class="agenda-card-sub">
+                    Final readiness review on September 26, 2026 to finalize all
+                    deliverables
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+           SLIDE 3: COVER - 01 INTRODUCTION
+           ========================================== -->
+        <section class="slide" data-slide="3">
+          <div class="hero-pure-center">
+            <span
+              class="badge badge-indigo"
+              style="
+                font-size: 13px;
+                font-weight: 800;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                padding: 6px 16px;
+                margin-bottom: 20px;
+              "
+              >Section 01</span
+            >
+            <h1
+              style="
+                font-size: clamp(48px, 6vw, 76px);
+                font-weight: 800;
+                letter-spacing: -0.035em;
+                color: #ffffff;
+                line-height: 1.15;
+                margin: 0 0 16px 0;
+              "
+            >
+              Intro<span
+                style="
+                  background: linear-gradient(135deg, #818cf8 0%, #38bdf8 100%);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  display: inline-block;
+                  padding-bottom: 0.12em;
+                  margin-bottom: -0.12em;
+                "
+                >duction</span
+              >
+            </h1>
+            <p
+              style="
+                font-size: clamp(16px, 1.8vw, 20px);
+                color: var(--text-secondary);
+                max-width: 620px;
+                line-height: 1.5;
+                margin: 0;
+              "
+            >
+              Google Drive repository, member participation, and decision-making rules
+            </p>
+          </div>
+        </section>
+
+<!-- ==========================================
+           SLIDE 4: COMMITTEE MASTER FOLDER
+           ========================================== -->
+        <section class="slide" data-slide="4">
+          <div class="drive-split-layout">
+            <!-- Left Hero Block -->
+            <div class="agenda-hero-block">
+              <h2 class="drive-hero-title">
+                Committee <span>Master Folder</span>
+              </h2>
+            </div>
+
+            <!-- Right Content Canvas (Direct on Canvas, No Outer Boxed Card) -->
+            <div class="drive-canvas-content">
+              <div class="drive-canvas-header">
+                <div>
+                  <div class="drive-canvas-title">Google Drive Archive</div>
+                  <div class="drive-canvas-sub">
+                    (26-27) Training and Seminars Committee
+                  </div>
+                </div>
+                <a
+                  href="https://drive.google.com/drive/folders/1Jg3SZDdPSFLKiEKnM0T9YXfML9p6Yl-3?usp=drive_link"
+                  target="_blank"
+                  class="drive-open-btn"
+                >
+                  <span>Open Google Drive</span>
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  >
+                    <path
+                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                    ></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+              </div>
+
+              <div class="drive-files-list">
+                <div class="drive-file-row">
+                  <div class="drive-category-badge indigo">ACTIVITIES</div>
+                  <div class="drive-file-info">
+                    <div class="drive-file-name">
+                      Activity &amp; Workshop Sub-Folders
+                    </div>
+                    <div class="drive-file-desc">
+                      Dedicated directories for every workshop activity,
+                      dry-runs, and lab exercises
+                    </div>
+                  </div>
+                </div>
+
+                <div class="drive-file-row">
+                  <div class="drive-category-badge blue">LETTERS</div>
+                  <div class="drive-file-info">
+                    <div class="drive-file-name">
+                      Official Letters &amp; Communications
+                    </div>
+                    <div class="drive-file-desc">
+                      Speaker invitations, dean's office endorsements, and TSG
+                      lab requests
+                    </div>
+                  </div>
+                </div>
+
+                <div class="drive-file-row">
+                  <div class="drive-category-badge emerald">TRACKERS</div>
+                  <div class="drive-file-info">
+                    <div class="drive-file-name">
+                      Master Trackers &amp; Forms
+                    </div>
+                    <div class="drive-file-desc">
+                      Live registration spreadsheets, attendance logs, and
+                      evaluation forms
+                    </div>
+                  </div>
+                </div>
+
+                <div class="drive-file-row">
+                  <div class="drive-category-badge amber">FINANCE</div>
+                  <div class="drive-file-info">
+                    <div class="drive-file-name">
+                      Budget Proposals &amp; Receipts
+                    </div>
+                    <div class="drive-file-desc">
+                      Itemized budget plans, ₱35/₱50 fee accounting, and expense
+                      receipts
+                    </div>
+                  </div>
+                </div>
+
+                <div class="drive-file-row">
+                  <div class="drive-category-badge slate">MINUTES</div>
+                  <div class="drive-file-info">
+                    <div class="drive-file-name">
+                      Meeting Minutes &amp; Documentation
+                    </div>
+                    <div class="drive-file-desc">
+                      Official minutes from all committee meetings and photo
+                      archives
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="drive-canvas-footer">
+                <span style="color: var(--text-secondary)"
+                  >For folder access or creating new sub-folders, notify
+                  <strong>Chielsea (Secretary)</strong></span
+                >
+              </div>
+            </div>
+          </div>
+        </section>
+
+<!-- ==========================================
+           SLIDE 5: MEMBER ENGAGEMENT
+           ========================================== -->
+        <section class="slide" data-slide="5">
+          <div class="agenda-split-layout">
+            <!-- Left Hero Block -->
+            <div class="agenda-hero-block">
+              <h2 class="agenda-hero-title">Member <span>Engagement</span></h2>
+            </div>
+
+            <!-- Right Content Cards -->
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                justify-content: center;
+                height: 100%;
+              "
+            >
+              <div
+                class="card"
+                style="
+                  padding: 28px 32px;
+                  border-color: rgba(16, 185, 129, 0.25);
+                "
+              >
+                <div style="display: flex; align-items: flex-start; gap: 20px">
+                  <div
+                    class="card-icon-wrapper emerald"
+                    style="margin-bottom: 0; width: 46px; height: 46px"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 14 14"></polyline>
+                    </svg>
+                  </div>
+                  <div style="flex: 1">
+                    <div
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        margin-bottom: 6px;
+                      "
+                    >
+                      <h3
+                        style="
+                          font-size: 20px;
+                          font-weight: 700;
+                          color: #ffffff;
+                        "
+                      >
+                        Meeting Attendance
+                      </h3>
+                      <span class="badge badge-emerald">Core Standard</span>
+                    </div>
+                    <p
+                      style="
+                        font-size: 14.5px;
+                        color: var(--text-secondary);
+                        line-height: 1.6;
+                        margin: 0;
+                      "
+                    >
+                      Punctuality and active presence during coordination
+                      meetings ensure committee decisions are finalized rapidly
+                      without delays.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="card"
+                style="
+                  padding: 28px 32px;
+                  border-color: rgba(56, 189, 248, 0.25);
+                "
+              >
+                <div style="display: flex; align-items: flex-start; gap: 20px">
+                  <div
+                    class="card-icon-wrapper blue"
+                    style="margin-bottom: 0; width: 46px; height: 46px"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div style="flex: 1">
+                    <div
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        margin-bottom: 6px;
+                      "
+                    >
+                      <h3
+                        style="
+                          font-size: 20px;
+                          font-weight: 700;
+                          color: #ffffff;
+                        "
+                      >
+                        Proactive Updates
+                      </h3>
+                      <span class="badge badge-blue">Communication</span>
+                    </div>
+                    <p
+                      style="
+                        font-size: 14.5px;
+                        color: var(--text-secondary);
+                        line-height: 1.6;
+                        margin: 0;
+                      "
+                    >
+                      Share continuous progress updates freely in committee
+                      group chats. Don't wait for formal meetings to highlight
+                      blockers or ask for help.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+<!-- ==========================================
+           SLIDE 6: DECISION-MAKING PROTOCOL
+           ========================================== -->
+        <section class="slide" data-slide="6">
+          <div class="agenda-split-layout">
+            <!-- Left Hero Block -->
+            <div class="agenda-hero-block">
+              <h2 class="agenda-hero-title">Decision <span>Protocol</span></h2>
+            </div>
+
+            <!-- Right Content Cards -->
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                justify-content: center;
+                height: 100%;
+              "
+            >
+              <div
+                class="card"
+                style="
+                  padding: 22px 28px;
+                  border-color: rgba(99, 102, 241, 0.25);
+                "
+              >
+                <div style="display: flex; align-items: flex-start; gap: 18px">
+                  <div
+                    class="agenda-card-num"
+                    style="
+                      background: rgba(99, 102, 241, 0.15);
+                      color: #a5b4fc;
+                      border-color: rgba(99, 102, 241, 0.3);
+                      width: 42px;
+                      height: 42px;
+                      font-size: 14px;
+                      font-weight: 800;
+                    "
+                  >
+                    01
+                  </div>
+                  <div style="flex: 1">
+                    <div
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        margin-bottom: 5px;
+                      "
+                    >
+                      <h3
+                        style="
+                          font-size: 18px;
+                          font-weight: 700;
+                          color: #ffffff;
+                        "
+                      >
+                        Single Proposal
+                      </h3>
+                      <span class="badge badge-indigo">Auto-Approved</span>
+                    </div>
+                    <p
+                      style="
+                        font-size: 14px;
+                        color: var(--text-secondary);
+                        line-height: 1.5;
+                        margin: 0;
+                      "
+                    >
+                      If a lead presents a single well-structured recommendation
+                      with no objections, that proposal is automatically
+                      approved as the official decision.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="card"
+                style="
+                  padding: 22px 28px;
+                  border-color: rgba(16, 185, 129, 0.25);
+                "
+              >
+                <div style="display: flex; align-items: flex-start; gap: 18px">
+                  <div
+                    class="agenda-card-num"
+                    style="
+                      background: rgba(16, 185, 129, 0.15);
+                      color: #6ee7b7;
+                      border-color: rgba(16, 185, 129, 0.3);
+                      width: 42px;
+                      height: 42px;
+                      font-size: 14px;
+                      font-weight: 800;
+                    "
+                  >
+                    02
+                  </div>
+                  <div style="flex: 1">
+                    <div
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        margin-bottom: 5px;
+                      "
+                    >
+                      <h3
+                        style="
+                          font-size: 18px;
+                          font-weight: 700;
+                          color: #ffffff;
+                        "
+                      >
+                        Counter-Proposals
+                      </h3>
+                      <span class="badge badge-emerald"
+                        >Justification Needed</span
+                      >
+                    </div>
+                    <p
+                      style="
+                        font-size: 14px;
+                        color: var(--text-secondary);
+                        line-height: 1.5;
+                        margin: 0;
+                      "
+                    >
+                      Anyone proposing an alternative path must present a
+                      logically sound justification covering feasibility, cost,
+                      and team impact.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="card"
+                style="
+                  padding: 22px 28px;
+                  border-color: rgba(245, 158, 11, 0.25);
+                "
+              >
+                <div style="display: flex; align-items: flex-start; gap: 18px">
+                  <div
+                    class="agenda-card-num"
+                    style="
+                      background: rgba(245, 158, 11, 0.15);
+                      color: #fcd34d;
+                      border-color: rgba(245, 158, 11, 0.3);
+                      width: 42px;
+                      height: 42px;
+                      font-size: 14px;
+                      font-weight: 800;
+                    "
+                  >
+                    03
+                  </div>
+                  <div style="flex: 1">
+                    <div
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        margin-bottom: 5px;
+                      "
+                    >
+                      <h3
+                        style="
+                          font-size: 18px;
+                          font-weight: 700;
+                          color: #ffffff;
+                        "
+                      >
+                        Multiple Options
+                      </h3>
+                      <span class="badge badge-amber">Immediate Vote</span>
+                    </div>
+                    <p
+                      style="
+                        font-size: 14px;
+                        color: var(--text-secondary);
+                        line-height: 1.5;
+                        margin: 0;
+                      "
+                    >
+                      When multiple valid options exist, the floor proceeds
+                      directly to a vote. Majority decision is final and all
+                      members commit to it.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+           SLIDE 7: COVER - 02 EVENT LIFECYCLE
+           ========================================== -->
+        <section class="slide" data-slide="7">
+          <div class="hero-pure-center">
+            <span
+              class="badge badge-blue"
+              style="
+                font-size: 13px;
+                font-weight: 800;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                padding: 6px 16px;
+                margin-bottom: 20px;
+              "
+              >Section 02</span
+            >
+            <h1
+              style="
+                font-size: clamp(48px, 6vw, 76px);
+                font-weight: 800;
+                letter-spacing: -0.035em;
+                color: #ffffff;
+                line-height: 1.15;
+                margin: 0 0 16px 0;
+              "
+            >
+              Event <span
+                style="
+                  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  display: inline-block;
+                  padding-bottom: 0.12em;
+                  margin-bottom: -0.12em;
+                "
+                >Lifecycle</span
+              >
+            </h1>
+            <p
+              style="
+                font-size: clamp(16px, 1.8vw, 20px);
+                color: var(--text-secondary);
+                max-width: 620px;
+                line-height: 1.5;
+                margin: 0;
+              "
+            >
+              Step-by-step breakdown: what happens before, during, and after the workshop
+            </p>
+          </div>
+        </section>
+
+<!-- ==========================================
+           SLIDE 8: OPERATIONS: BEFORE & DURING
+           ========================================== -->
+        <section class="slide" data-slide="8">
+          <div class="agenda-split-layout">
+            <!-- Left Hero Block -->
+            <div class="agenda-hero-block">
+              <h2 class="agenda-hero-title">
+                Pre-Event &amp; <span>Event Day</span>
+              </h2>
+            </div>
+
+            <!-- Right Content Cards -->
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+                justify-content: center;
+                height: 100%;
+              "
+            >
+              <!-- Phase 1 Card -->
+              <div
+                class="card"
+                style="
+                  padding: 24px 28px;
+                  border-color: rgba(99, 102, 241, 0.25);
+                "
+              >
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 14px;
+                  "
+                >
+                  <div style="display: flex; align-items: center; gap: 10px">
+                    <span
+                      class="agenda-card-num"
+                      style="width: 32px; height: 32px; font-size: 12px"
+                      >01</span
+                    >
+                    <h3
+                      style="font-size: 18px; font-weight: 700; color: #ffffff"
+                    >
+                      Pre-Event Preparation
+                    </h3>
+                  </div>
+                  <span class="badge badge-indigo">Pre-Event</span>
+                </div>
+
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 10px 18px;
+                  "
+                >
+                  <div
+                    style="
+                      display: flex;
+                      gap: 8px;
+                      font-size: 13.5px;
+                      color: var(--text-secondary);
+                      line-height: 1.45;
+                    "
+                  >
+                    <span style="color: #818cf8; font-weight: bold">•</span>
+                    <span>Assign committee roles &amp; program flow</span>
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      gap: 8px;
+                      font-size: 13.5px;
+                      color: var(--text-secondary);
+                      line-height: 1.45;
+                    "
+                  >
+                    <span style="color: #818cf8; font-weight: bold">•</span>
+                    <span>Confirm venue reservation &amp; syllabus</span>
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      gap: 8px;
+                      font-size: 13.5px;
+                      color: var(--text-secondary);
+                      line-height: 1.45;
+                    "
+                  >
+                    <span style="color: #818cf8; font-weight: bold">•</span>
+                    <span>Deploy Registration &amp; Evaluation Forms</span>
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      gap: 8px;
+                      font-size: 13.5px;
+                      color: var(--text-secondary);
+                      line-height: 1.45;
+                    "
+                  >
+                    <span style="color: #818cf8; font-weight: bold">•</span>
+                    <span>Publish Teaser &rarr; Official Poster</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Phase 2 Card -->
+              <div
+                class="card"
+                style="
+                  padding: 24px 28px;
+                  border-color: rgba(16, 185, 129, 0.25);
+                "
+              >
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 14px;
+                  "
+                >
+                  <div style="display: flex; align-items: center; gap: 10px">
+                    <span
+                      class="agenda-card-num"
+                      style="
+                        background: rgba(16, 185, 129, 0.15);
+                        color: #6ee7b7;
+                        border-color: rgba(16, 185, 129, 0.3);
+                        width: 32px;
+                        height: 32px;
+                        font-size: 12px;
+                      "
+                      >02</span
+                    >
+                    <h3
+                      style="font-size: 18px; font-weight: 700; color: #ffffff"
+                    >
+                      Event Day Execution
+                    </h3>
+                  </div>
+                  <span class="badge badge-emerald">Event Day</span>
+                </div>
+
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 12px 18px;
+                  "
+                >
+                  <div style="display: flex; flex-direction: column; gap: 6px">
+                    <div
+                      style="
+                        display: flex;
+                        gap: 8px;
+                        font-size: 13.5px;
+                        color: var(--text-secondary);
+                        line-height: 1.45;
+                      "
+                    >
+                      <span style="color: #34d399; font-weight: bold">•</span>
+                      <span
+                        ><strong>Lab Setup:</strong> Pre-installed on PCs</span
+                      >
+                    </div>
+                    <div style="display: flex; gap: 6px; margin-left: 14px">
+                      <div
+                        style="
+                          display: inline-flex;
+                          align-items: center;
+                          gap: 5px;
+                          background: rgba(240, 80, 50, 0.12);
+                          border: 1px solid rgba(240, 80, 50, 0.3);
+                          padding: 3px 8px;
+                          border-radius: 6px;
+                          font-family: var(--font-mono);
+                          font-size: 11px;
+                          font-weight: 700;
+                          color: #ff8a75;
+                        "
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <path
+                            d="M21.616 10.707l-8.323-8.323a1.36 1.36 0 0 0-1.923 0L9.458 4.296l3.633 3.633c.44-.13.935-.027 1.282.32.348.347.45.842.32 1.282l2.38 2.38a1.366 1.366 0 0 1 1.282-.32 1.362 1.362 0 0 1 .962.962 1.362 1.362 0 0 1-.32 1.282 1.36 1.36 0 0 1-1.923 0 1.364 1.364 0 0 1-.32-1.282l-2.3-2.3v5.006c.386.177.69.48.868.867a1.36 1.36 0 0 1-.962 1.923 1.36 1.36 0 0 1-1.923-.962 1.363 1.363 0 0 1 .867-1.828V9.82a1.36 1.36 0 0 1-.867-1.828c0-.447.218-.844.555-1.096L9.36 3.264 2.384 10.24a1.36 1.36 0 0 0 0 1.923l8.323 8.323a1.36 1.36 0 0 0 1.923 0l8.986-8.986a1.36 1.36 0 0 0 0-1.793z"
+                            fill="#F05032"
+                          />
+                        </svg>
+                        <span>Git CLI</span>
+                      </div>
+                      <div
+                        style="
+                          display: inline-flex;
+                          align-items: center;
+                          gap: 5px;
+                          background: rgba(147, 51, 234, 0.12);
+                          border: 1px solid rgba(147, 51, 234, 0.3);
+                          padding: 3px 8px;
+                          border-radius: 6px;
+                          font-family: var(--font-mono);
+                          font-size: 11px;
+                          font-weight: 700;
+                          color: #d8b4fe;
+                        "
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                          />
+                        </svg>
+                        <span>GitHub Desktop</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    style="
+                      display: flex;
+                      gap: 8px;
+                      font-size: 13.5px;
+                      color: var(--text-secondary);
+                      line-height: 1.45;
+                    "
+                  >
+                    <span style="color: #34d399; font-weight: bold">•</span>
+                    <span
+                      ><strong>TSG Logins:</strong> Ensure units unlocked</span
+                    >
+                  </div>
+
+                  <div
+                    style="
+                      display: flex;
+                      gap: 8px;
+                      font-size: 13.5px;
+                      color: var(--text-secondary);
+                      line-height: 1.45;
+                    "
+                  >
+                    <span style="color: #34d399; font-weight: bold">•</span>
+                    <span
+                      ><strong>Live Floor Support:</strong> Rapid
+                      troubleshooting</span
+                    >
+                  </div>
+
+                  <div
+                    style="
+                      display: flex;
+                      gap: 8px;
+                      font-size: 13.5px;
+                      color: var(--text-secondary);
+                      line-height: 1.45;
+                    "
+                  >
+                    <span style="color: #34d399; font-weight: bold">•</span>
+                    <span
+                      ><strong>Front-Desk:</strong> Attendee registration &amp;
+                      ushering</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+<!-- ==========================================
+           SLIDE 9: OPERATIONS: AFTER THE EVENT
+           ========================================== -->
+        <section class="slide" data-slide="9">
+          <div class="agenda-split-layout">
+            <!-- Left Hero Block -->
+            <div class="agenda-hero-block">
+              <h2 class="agenda-hero-title">Post-Event <span>Wrap-Up</span></h2>
+            </div>
+
+            <!-- Right Content Cards -->
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                justify-content: center;
+                height: 100%;
+              "
+            >
+              <!-- Item 1 -->
+              <div
+                class="card"
+                style="
+                  padding: 20px 26px;
+                  border-color: rgba(245, 158, 11, 0.25);
+                "
+              >
+                <div style="display: flex; align-items: center; gap: 18px">
+                  <div
+                    class="agenda-card-num"
+                    style="
+                      background: rgba(245, 158, 11, 0.15);
+                      color: #fcd34d;
+                      border-color: rgba(245, 158, 11, 0.3);
+                      width: 40px;
+                      height: 40px;
+                      font-size: 13.5px;
+                      font-weight: 800;
+                    "
+                  >
+                    01
+                  </div>
+                  <div style="flex: 1">
+                    <h3
+                      style="
+                        font-size: 17.5px;
+                        font-weight: 700;
+                        color: #ffffff;
+                        margin-bottom: 4px;
+                      "
+                    >
+                      Venue &amp; Lab Teardown
+                    </h3>
+                    <p
+                      style="
+                        font-size: 14px;
+                        color: var(--text-secondary);
+                        line-height: 1.5;
+                        margin: 0;
+                      "
+                    >
+                      Clean the room, power off units, restore default
+                      laboratory configuration, and coordinate formal turnover
+                      with TSG staff.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Item 2 -->
+              <div
+                class="card"
+                style="
+                  padding: 20px 26px;
+                  border-color: rgba(56, 189, 248, 0.25);
+                "
+              >
+                <div style="display: flex; align-items: center; gap: 18px">
+                  <div
+                    class="agenda-card-num"
+                    style="
+                      background: rgba(56, 189, 248, 0.15);
+                      color: #7dd3fc;
+                      border-color: rgba(56, 189, 248, 0.3);
+                      width: 40px;
+                      height: 40px;
+                      font-size: 13.5px;
+                      font-weight: 800;
+                    "
+                  >
+                    02
+                  </div>
+                  <div style="flex: 1">
+                    <h3
+                      style="
+                        font-size: 17.5px;
+                        font-weight: 700;
+                        color: #ffffff;
+                        margin-bottom: 4px;
+                      "
+                    >
+                      E-Certificates Distribution
+                    </h3>
+                    <p
+                      style="
+                        font-size: 14px;
+                        color: var(--text-secondary);
+                        line-height: 1.5;
+                        margin: 0;
+                      "
+                    >
+                      Secretary (Chielsea) verifies evaluation form completions
+                      and generates personalized digital certificates for all
+                      attendees.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Item 3 -->
+              <div
+                class="card"
+                style="
+                  padding: 20px 26px;
+                  border-color: rgba(99, 102, 241, 0.25);
+                "
+              >
+                <div style="display: flex; align-items: center; gap: 18px">
+                  <div
+                    class="agenda-card-num"
+                    style="
+                      background: rgba(99, 102, 241, 0.15);
+                      color: #a5b4fc;
+                      border-color: rgba(99, 102, 241, 0.3);
+                      width: 40px;
+                      height: 40px;
+                      font-size: 13.5px;
+                      font-weight: 800;
+                    "
+                  >
+                    03
+                  </div>
+                  <div style="flex: 1">
+                    <h3
+                      style="
+                        font-size: 17.5px;
+                        font-weight: 700;
+                        color: #ffffff;
+                        margin-bottom: 4px;
+                      "
+                    >
+                      Post-Mortem Review
+                    </h3>
+                    <p
+                      style="
+                        font-size: 14px;
+                        color: var(--text-secondary);
+                        line-height: 1.5;
+                        margin: 0;
+                      "
+                    >
+                      Debrief meeting to synthesize evaluation feedback: what
+                      went right, areas for improvement, and recommendations for
+                      future workshops.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+           SLIDE 10: COVER - 03 PROJECT UPDATES
+           ========================================== -->
+        <section class="slide" data-slide="10">
+          <div class="hero-pure-center">
+            <span
+              class="badge badge-amber"
+              style="
+                font-size: 13px;
+                font-weight: 800;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                padding: 6px 16px;
+                margin-bottom: 20px;
+              "
+              >Section 03</span
+            >
+            <h1
+              style="
+                font-size: clamp(48px, 6vw, 76px);
+                font-weight: 800;
+                letter-spacing: -0.035em;
+                color: #ffffff;
+                line-height: 1.15;
+                margin: 0 0 16px 0;
+              "
+            >
+              Project <span
+                style="
+                  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  display: inline-block;
+                  padding-bottom: 0.12em;
+                  margin-bottom: -0.12em;
+                "
+                >Updates</span
+              >
+            </h1>
+            <p
+              style="
+                font-size: clamp(16px, 1.8vw, 20px);
+                color: var(--text-secondary);
+                max-width: 620px;
+                line-height: 1.5;
+                margin: 0;
+              "
+            >
+              Event title, registration pricing, and lab software setup
+            </p>
+          </div>
+        </section>
+
+<!-- ==========================================
+           SLIDE 11: EVENT SPECS & PRICING
+           ========================================== -->
+        <section class="slide" data-slide="11">
+          <div class="slide-header">
+            <h2 class="slide-h1">Workshop Identity & Tiered Pricing</h2>
+          </div>
+
+          <div class="pricing-split" style="flex: 1">
+            <div class="price-card member">
+              <span class="badge badge-emerald">ICpEP Members</span>
+              <div class="big-price-tag">₱35</div>
+              <p
+                style="
+                  font-size: 15px;
+                  color: var(--text-secondary);
+                  margin-bottom: 8px;
+                "
+              >
+                Subsidized member exclusive benefit
+              </p>
+              <span
+                style="
+                  font-size: 12.5px;
+                  color: var(--text-muted);
+                  font-family: var(--font-mono);
+                "
+                >Verification via Masterlist</span
+              >
+            </div>
+
+            <div class="price-card standard">
+              <span class="badge badge-slate">Non-Members / General</span>
+              <div class="big-price-tag">₱50</div>
+              <p
+                style="
+                  font-size: 15px;
+                  color: var(--text-secondary);
+                  margin-bottom: 8px;
+                "
+              >
+                Standard general admission
+              </p>
+              <span
+                style="
+                  font-size: 12.5px;
+                  color: var(--text-muted);
+                  font-family: var(--font-mono);
+                "
+                >Open to all CpE year levels</span
+              >
+            </div>
+          </div>
+        </section>
+
+<!-- ==========================================
+           SLIDE 12: TECH STACK & LAB ENVIRONMENT
+           ========================================== -->
+        <section class="slide" data-slide="12">
+          <div class="agenda-split-layout">
+            <!-- Left Hero Block -->
+            <div class="agenda-hero-block">
+              <h2 class="agenda-hero-title">
+                Software &amp; <span>Lab Stack</span>
+              </h2>
+            </div>
+
+            <!-- Right Content Cards -->
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+                justify-content: center;
+                height: 100%;
+              "
+            >
+              <!-- Standardized Tools Card -->
+              <div
+                class="card"
+                style="
+                  padding: 22px 26px;
+                  border-color: rgba(99, 102, 241, 0.25);
+                "
+              >
+                <h3
+                  style="
+                    font-size: 18px;
+                    font-weight: 700;
+                    color: #ffffff;
+                    margin-bottom: 14px;
+                  "
+                >
+                  Standardized Software Stack
+                </h3>
+
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 12px;
+                    margin-bottom: 12px;
+                  "
+                >
+                  <!-- Git CLI -->
+                  <div
+                    style="
+                      background: rgba(240, 80, 50, 0.08);
+                      border: 1px solid rgba(240, 80, 50, 0.25);
+                      border-radius: var(--radius-md);
+                      padding: 14px;
+                      display: flex;
+                      flex-direction: column;
+                      gap: 6px;
+                    "
+                  >
+                    <div
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                      "
+                    >
+                      <div style="display: flex; align-items: center; gap: 8px">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <path
+                            d="M21.616 10.707l-8.323-8.323a1.36 1.36 0 0 0-1.923 0L9.458 4.296l3.633 3.633c.44-.13.935-.027 1.282.32.348.347.45.842.32 1.282l2.38 2.38a1.366 1.366 0 0 1 1.282-.32 1.362 1.362 0 0 1 .962.962 1.362 1.362 0 0 1-.32 1.282 1.36 1.36 0 0 1-1.923 0 1.364 1.364 0 0 1-.32-1.282l-2.3-2.3v5.006c.386.177.69.48.868.867a1.36 1.36 0 0 1-.962 1.923 1.36 1.36 0 0 1-1.923-.962 1.363 1.363 0 0 1 .867-1.828V9.82a1.36 1.36 0 0 1-.867-1.828c0-.447.218-.844.555-1.096L9.36 3.264 2.384 10.24a1.36 1.36 0 0 0 0 1.923l8.323 8.323a1.36 1.36 0 0 0 1.923 0l8.986-8.986a1.36 1.36 0 0 0 0-1.793z"
+                            fill="#F05032"
+                          />
+                        </svg>
+                        <span
+                          style="
+                            font-size: 14.5px;
+                            font-weight: 800;
+                            color: #ffffff;
+                          "
+                          >Git CLI</span
+                        >
+                      </div>
+                      <span
+                        style="
+                          font-size: 10px;
+                          font-family: var(--font-mono);
+                          color: #ff8a75;
+                          font-weight: 700;
+                          background: rgba(240, 80, 50, 0.15);
+                          padding: 2px 7px;
+                          border-radius: 4px;
+                        "
+                        >Terminal</span
+                      >
+                    </div>
+                    <p
+                      style="
+                        font-size: 12px;
+                        color: var(--text-secondary);
+                        line-height: 1.4;
+                        margin: 0;
+                      "
+                    >
+                      Foundational command-line basics (init, add, commit, push,
+                      branch) for core concepts.
+                    </p>
+                  </div>
+
+                  <!-- GitHub Desktop -->
+                  <div
+                    style="
+                      background: rgba(147, 51, 234, 0.08);
+                      border: 1px solid rgba(147, 51, 234, 0.25);
+                      border-radius: var(--radius-md);
+                      padding: 14px;
+                      display: flex;
+                      flex-direction: column;
+                      gap: 6px;
+                    "
+                  >
+                    <div
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                      "
+                    >
+                      <div style="display: flex; align-items: center; gap: 8px">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="#d8b4fe"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                          />
+                        </svg>
+                        <span
+                          style="
+                            font-size: 14.5px;
+                            font-weight: 800;
+                            color: #ffffff;
+                          "
+                          >GitHub Desktop</span
+                        >
+                      </div>
+                      <span
+                        style="
+                          font-size: 10px;
+                          font-family: var(--font-mono);
+                          color: #d8b4fe;
+                          font-weight: 700;
+                          background: rgba(147, 51, 234, 0.15);
+                          padding: 2px 7px;
+                          border-radius: 4px;
+                        "
+                        >GUI App</span
+                      >
+                    </div>
+                    <p
+                      style="
+                        font-size: 12px;
+                        color: var(--text-secondary);
+                        line-height: 1.4;
+                        margin: 0;
+                      "
+                    >
+                      Visual GUI interface for visual diffs, repository
+                      management, and zero-friction commit tracking.
+                    </p>
+                  </div>
+                </div>
+
+                <p
+                  style="
+                    font-size: 13px;
+                    color: var(--text-muted);
+                    line-height: 1.45;
+                    margin: 0;
+                  "
+                >
+                  Gives beginner students the ideal balance between
+                  understanding foundational terminal commands and visual
+                  workflow clarity.
+                </p>
+              </div>
+
+              <!-- Walk-In Contingency Card -->
+              <div
+                class="card"
+                style="
+                  padding: 22px 26px;
+                  border-color: rgba(56, 189, 248, 0.25);
+                "
+              >
+                <h3
+                  style="
+                    font-size: 18px;
+                    font-weight: 700;
+                    color: #ffffff;
+                    margin-bottom: 10px;
+                  "
+                >
+                  Walk-In Contingency Strategy
+                </h3>
+                <p
+                  style="
+                    font-size: 14px;
+                    color: var(--text-secondary);
+                    line-height: 1.5;
+                    margin-bottom: 12px;
+                  "
+                >
+                  Publicity team will prepare a standby
+                  <strong>On-Site Registration</strong> posting ready for
+                  immediate broadcast.
+                </p>
+                <div
+                  style="
+                    padding: 10px 14px;
+                    background: rgba(56, 189, 248, 0.06);
+                    border-radius: var(--radius-sm);
+                    border-left: 3px solid #38bdf8;
+                    font-size: 13px;
+                    color: #bae6fd;
+                  "
+                >
+                  Triggered <strong>ONLY IF</strong> substantial participant
+                  slots remain open before workshop kick-off.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+<!-- ==========================================
+           SLIDE 13: COMMITTEE STATUS REPORTS (FLOOR UPDATES)
+           ========================================== -->
+        <section class="slide" data-slide="13">
+          <div class="agenda-split-layout">
+            <!-- Left Hero Block -->
+            <div class="agenda-hero-block">
+              <h2 class="agenda-hero-title">
+                Assignment <span>Updates?</span>
+              </h2>
+            </div>
+
+            <!-- Right Content Cards (6 Leads in Exact Order) -->
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                justify-content: center;
+                height: 100%;
+              "
+            >
+              <!-- 01 Secretariat (Chielsea) -->
+              <div
+                class="agenda-bullet-card"
+                style="
+                  padding: 12px 18px;
+                  border-color: rgba(99, 102, 241, 0.25);
+                "
+              >
+                <div
+                  class="agenda-card-num"
+                  style="
+                    background: rgba(99, 102, 241, 0.15);
+                    color: #a5b4fc;
+                    border-color: rgba(99, 102, 241, 0.3);
+                    width: 36px;
+                    height: 36px;
+                    font-size: 13px;
+                  "
+                >
+                  01
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    flex: 1;
+                  "
+                >
+                  <span
+                    style="font-size: 16px; font-weight: 700; color: #ffffff"
+                    >Secretariat</span
+                  >
+                  <span
+                    class="badge badge-indigo"
+                    style="font-size: 13px; font-weight: 700; padding: 4px 12px"
+                    >Chielsea</span
+                  >
+                </div>
+              </div>
+
+              <!-- 02 Program (EJ Kate) -->
+              <div
+                class="agenda-bullet-card"
+                style="
+                  padding: 12px 18px;
+                  border-color: rgba(16, 185, 129, 0.25);
+                "
+              >
+                <div
+                  class="agenda-card-num"
+                  style="
+                    background: rgba(16, 185, 129, 0.15);
+                    color: #6ee7b7;
+                    border-color: rgba(16, 185, 129, 0.3);
+                    width: 36px;
+                    height: 36px;
+                    font-size: 13px;
+                  "
+                >
+                  02
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    flex: 1;
+                  "
+                >
+                  <span
+                    style="font-size: 16px; font-weight: 700; color: #ffffff"
+                    >Program</span
+                  >
+                  <span
+                    class="badge badge-emerald"
+                    style="font-size: 13px; font-weight: 700; padding: 4px 12px"
+                    >EJ Kate</span
+                  >
+                </div>
+              </div>
+
+              <!-- 03 Logistics (Rey Emmanuel) -->
+              <div
+                class="agenda-bullet-card"
+                style="
+                  padding: 12px 18px;
+                  border-color: rgba(56, 189, 248, 0.25);
+                "
+              >
+                <div
+                  class="agenda-card-num"
+                  style="
+                    background: rgba(56, 189, 248, 0.15);
+                    color: #7dd3fc;
+                    border-color: rgba(56, 189, 248, 0.3);
+                    width: 36px;
+                    height: 36px;
+                    font-size: 13px;
+                  "
+                >
+                  03
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    flex: 1;
+                  "
+                >
+                  <span
+                    style="font-size: 16px; font-weight: 700; color: #ffffff"
+                    >Logistics</span
+                  >
+                  <span
+                    class="badge badge-blue"
+                    style="font-size: 13px; font-weight: 700; padding: 4px 12px"
+                    >Rey Emmanuel</span
+                  >
+                </div>
+              </div>
+
+              <!-- 04 Finance (Luke Miguel) -->
+              <div
+                class="agenda-bullet-card"
+                style="
+                  padding: 12px 18px;
+                  border-color: rgba(245, 158, 11, 0.25);
+                "
+              >
+                <div
+                  class="agenda-card-num"
+                  style="
+                    background: rgba(245, 158, 11, 0.15);
+                    color: #fcd34d;
+                    border-color: rgba(245, 158, 11, 0.3);
+                    width: 36px;
+                    height: 36px;
+                    font-size: 13px;
+                  "
+                >
+                  04
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    flex: 1;
+                  "
+                >
+                  <span
+                    style="font-size: 16px; font-weight: 700; color: #ffffff"
+                    >Finance</span
+                  >
+                  <span
+                    class="badge badge-amber"
+                    style="font-size: 13px; font-weight: 700; padding: 4px 12px"
+                    >Luke Miguel</span
+                  >
+                </div>
+              </div>
+
+              <!-- 05 Publicity (Carl Marvic) -->
+              <div
+                class="agenda-bullet-card"
+                style="
+                  padding: 12px 18px;
+                  border-color: rgba(168, 85, 247, 0.25);
+                "
+              >
+                <div
+                  class="agenda-card-num"
+                  style="
+                    background: rgba(168, 85, 247, 0.15);
+                    color: #d8b4fe;
+                    border-color: rgba(168, 85, 247, 0.3);
+                    width: 36px;
+                    height: 36px;
+                    font-size: 13px;
+                  "
+                >
+                  05
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    flex: 1;
+                  "
+                >
+                  <span
+                    style="font-size: 16px; font-weight: 700; color: #ffffff"
+                    >Publicity</span
+                  >
+                  <span
+                    class="badge"
+                    style="
+                      background: rgba(168, 85, 247, 0.15);
+                      color: #d8b4fe;
+                      border: 1px solid rgba(168, 85, 247, 0.3);
+                      font-size: 13px;
+                      font-weight: 700;
+                      padding: 4px 12px;
+                    "
+                    >Carl Marvic</span
+                  >
+                </div>
+              </div>
+
+              <!-- 06 Registration (Christian Gene) -->
+              <div
+                class="agenda-bullet-card"
+                style="
+                  padding: 12px 18px;
+                  border-color: rgba(16, 185, 129, 0.25);
+                "
+              >
+                <div
+                  class="agenda-card-num"
+                  style="
+                    background: rgba(16, 185, 129, 0.15);
+                    color: #6ee7b7;
+                    border-color: rgba(16, 185, 129, 0.3);
+                    width: 36px;
+                    height: 36px;
+                    font-size: 13px;
+                  "
+                >
+                  06
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    flex: 1;
+                  "
+                >
+                  <span
+                    style="font-size: 16px; font-weight: 700; color: #ffffff"
+                    >Registration</span
+                  >
+                  <span
+                    class="badge badge-emerald"
+                    style="font-size: 13px; font-weight: 700; padding: 4px 12px"
+                    >Christian Gene</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+<!-- ==========================================
+           SLIDE 14: DISCUSSION (OPEN FLOOR)
+           ========================================== -->
+        <section class="slide" data-slide="14">
+          <div class="hero-pure-center">
+            <h1
+              style="
+                font-size: clamp(54px, 6.8vw, 88px);
+                font-weight: 800;
+                letter-spacing: -0.035em;
+                color: #ffffff;
+                line-height: 1.15;
+                margin: 0;
+              "
+            >
+              Open
+              <span
+                style="
+                  background: linear-gradient(135deg, #818cf8 0%, #38bdf8 100%);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  display: inline-block;
+                  padding-bottom: 0.15em;
+                  margin-bottom: -0.15em;
+                "
+                >Discussion</span
+              >
+            </h1>
+          </div>
+        </section>
+
+        <!-- ==========================================
+           SLIDE 15: COVER - 04 ROLES & ASSIGNMENTS
+           ========================================== -->
+        <section class="slide" data-slide="15">
+          <div class="hero-pure-center">
+            <span
+              class="badge badge-emerald"
+              style="
+                font-size: 13px;
+                font-weight: 800;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                padding: 6px 16px;
+                margin-bottom: 20px;
+              "
+              >Section 04</span
+            >
+            <h1
+              style="
+                font-size: clamp(48px, 6vw, 76px);
+                font-weight: 800;
+                letter-spacing: -0.035em;
+                color: #ffffff;
+                line-height: 1.15;
+                margin: 0 0 16px 0;
+              "
+            >
+              Roles &amp; <span
+                style="
+                  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  display: inline-block;
+                  padding-bottom: 0.12em;
+                  margin-bottom: -0.12em;
+                "
+                >Assignments</span
+              >
+            </h1>
+            <p
+              style="
+                font-size: clamp(16px, 1.8vw, 20px);
+                color: var(--text-secondary);
+                max-width: 620px;
+                line-height: 1.5;
+                margin: 0;
+              "
+            >
+              Committee staffing across technical setup, stage hosting, floor support, and docs
+            </p>
+          </div>
+        </section>
+
+<!-- ==========================================
+           SLIDE 16: COMMITTEE ROLES MATRIX
+           ========================================== -->
+        <section class="slide" data-slide="16">
+          <div class="slide-header" style="margin-bottom: 16px">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+              "
+            >
+              <div>
+                <h2 class="slide-h1">Committee Assignments &amp; Leads</h2>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  background: rgba(15, 23, 42, 0.85);
+                  border: 1px solid var(--border-light);
+                  padding: 6px 14px;
+                  border-radius: var(--radius-full);
+                "
+              >
+                <span
+                  style="
+                    font-size: 11.5px;
+                    font-family: var(--font-mono);
+                    color: var(--text-muted);
+                    font-weight: 700;
+                    text-transform: uppercase;
+                  "
+                  >Core Leads:</span
+                >
+                <span class="badge badge-indigo" style="font-size: 11.5px"
+                  >Adrian Seth (Head)</span
+                >
+                <span class="badge badge-indigo" style="font-size: 11.5px"
+                  >Chielsea (Secretary)</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 16px;
+              flex: 1;
+            "
+          >
+            <!-- Phase 1: Pre-Event -->
+            <div
+              class="card"
+              style="
+                padding: 18px 20px;
+                border-color: rgba(99, 102, 241, 0.3);
+                justify-content: space-between;
+              "
+            >
+              <div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 12px;
+                    padding-bottom: 8px;
+                    border-bottom: 1px solid var(--border-light);
+                  "
+                >
+                  <div style="display: flex; align-items: center; gap: 8px">
+                    <div
+                      style="
+                        width: 26px;
+                        height: 26px;
+                        border-radius: 6px;
+                        background: rgba(99, 102, 241, 0.15);
+                        border: 1px solid rgba(99, 102, 241, 0.3);
+                        color: #a5b4fc;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 11.5px;
+                        font-family: var(--font-mono);
+                        font-weight: 800;
+                      "
+                    >
+                      01
+                    </div>
+                    <h3
+                      style="
+                        font-size: 15.5px;
+                        font-weight: 700;
+                        color: #ffffff;
+                      "
+                    >
+                      Pre-Event Setup
+                    </h3>
+                  </div>
+                  <span class="badge badge-indigo">Planning</span>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 6px">
+                  <div
+                    class="role-item"
+                    style="margin-bottom: 0; padding: 6.5px 12px"
+                  >
+                    <span class="role-item-name">Program Flow</span>
+                    <span class="badge badge-emerald">EJ Kate</span>
+                  </div>
+                  <div
+                    class="role-item"
+                    style="margin-bottom: 0; padding: 6.5px 12px"
+                  >
+                    <span class="role-item-name">Venue &amp; Lab Booking</span>
+                    <span class="badge badge-blue">Rey Emmanuel</span>
+                  </div>
+                  <div
+                    class="role-item"
+                    style="margin-bottom: 0; padding: 6.5px 12px"
+                  >
+                    <span class="role-item-name">Publicity &amp; Posters</span>
+                    <span
+                      class="badge"
+                      style="
+                        background: rgba(168, 85, 247, 0.15);
+                        color: #d8b4fe;
+                        border: 1px solid rgba(168, 85, 247, 0.3);
+                      "
+                      >Carl Marvic</span
+                    >
+                  </div>
+                  <div
+                    class="role-item"
+                    style="margin-bottom: 0; padding: 6.5px 12px"
+                  >
+                    <span class="role-item-name">Registration Forms</span>
+                    <span class="badge badge-emerald">Christian Gene</span>
+                  </div>
+                  <div
+                    class="role-item"
+                    style="margin-bottom: 0; padding: 6.5px 12px"
+                  >
+                    <span class="role-item-name">Budget Proposal</span>
+                    <span class="badge badge-amber">Luke Miguel</span>
+                  </div>
+                </div>
+              </div>
+              <div
+                style="
+                  padding-top: 6px;
+                  border-top: 1px solid var(--border-light);
+                  font-size: 11px;
+                  color: var(--text-muted);
+                  font-family: var(--font-mono);
+                "
+              >
+                Deliverables finalized before Sept 26
+              </div>
+            </div>
+
+            <!-- Phase 2: Event Day -->
+            <div
+              class="card"
+              style="
+                padding: 18px 20px;
+                border-color: rgba(16, 185, 129, 0.3);
+                justify-content: space-between;
+              "
+            >
+              <div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 12px;
+                    padding-bottom: 8px;
+                    border-bottom: 1px solid var(--border-light);
+                  "
+                >
+                  <div style="display: flex; align-items: center; gap: 8px">
+                    <div
+                      style="
+                        width: 26px;
+                        height: 26px;
+                        border-radius: 6px;
+                        background: rgba(16, 185, 129, 0.15);
+                        border: 1px solid rgba(16, 185, 129, 0.3);
+                        color: #6ee7b7;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 11.5px;
+                        font-family: var(--font-mono);
+                        font-weight: 800;
+                      "
+                    >
+                      02
+                    </div>
+                    <h3
+                      style="
+                        font-size: 15.5px;
+                        font-weight: 700;
+                        color: #ffffff;
+                      "
+                    >
+                      Event Day Flow
+                    </h3>
+                  </div>
+                  <span class="badge badge-emerald">Live Ops</span>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 6px">
+                  <div
+                    class="role-item"
+                    style="margin-bottom: 0; padding: 6.5px 12px"
+                  >
+                    <span class="role-item-name">Stage Host &amp; MC</span>
+                    <span class="badge badge-indigo">Adrian Seth</span>
+                  </div>
+                  <div
+                    class="role-item"
+                    style="margin-bottom: 0; padding: 6.5px 12px"
+                  >
+                    <span class="role-item-name">PC &amp; Lab Tech Setup</span>
+                    <span class="badge badge-slate" style="color: #ffffff"
+                      >Adrian Seth, Luke Miguel, Carl Marvic</span
+                    >
+                  </div>
+                  <div
+                    class="role-item"
+                    style="margin-bottom: 0; padding: 6.5px 12px"
+                  >
+                    <span class="role-item-name">Lab Floor Assistants</span>
+                    <span class="badge badge-slate" style="color: #ffffff"
+                      >Luke Miguel &amp; Carl Marvic</span
+                    >
+                  </div>
+                  <div
+                    class="role-item"
+                    style="margin-bottom: 0; padding: 6.5px 12px"
+                  >
+                    <span class="role-item-name">On-site registration</span>
+                    <span class="badge badge-emerald">Christian Gene</span>
+                  </div>
+                  <div
+                    class="role-item"
+                    style="margin-bottom: 0; padding: 6.5px 12px"
+                  >
+                    <span class="role-item-name">Usher</span>
+                    <span class="badge badge-slate" style="color: #ffffff"
+                      >Carl Marvic, Luke Miguel, Kescy</span
+                    >
+                  </div>
+                  <div
+                    class="role-item"
+                    style="margin-bottom: 0; padding: 6.5px 12px"
+                  >
+                    <span class="role-item-name">Documentation</span>
+                    <span
+                      class="badge"
+                      style="
+                        background: rgba(168, 85, 247, 0.15);
+                        color: #d8b4fe;
+                        border: 1px solid rgba(168, 85, 247, 0.3);
+                      "
+                      >Kescy</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div
+                style="
+                  padding-top: 6px;
+                  border-top: 1px solid var(--border-light);
+                  font-size: 11px;
+                  color: var(--text-muted);
+                  font-family: var(--font-mono);
+                "
+              >
+                Live participant support during workshop
+              </div>
+            </div>
+
+            <!-- Phase 3: Post-Event -->
+            <div
+              class="card"
+              style="
+                padding: 18px 20px;
+                border-color: rgba(56, 189, 248, 0.3);
+                justify-content: space-between;
+              "
+            >
+              <div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 12px;
+                    padding-bottom: 8px;
+                    border-bottom: 1px solid var(--border-light);
+                  "
+                >
+                  <div style="display: flex; align-items: center; gap: 8px">
+                    <div
+                      style="
+                        width: 26px;
+                        height: 26px;
+                        border-radius: 6px;
+                        background: rgba(56, 189, 248, 0.15);
+                        border: 1px solid rgba(56, 189, 248, 0.3);
+                        color: #7dd3fc;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 11.5px;
+                        font-family: var(--font-mono);
+                        font-weight: 800;
+                      "
+                    >
+                      03
+                    </div>
+                    <h3
+                      style="
+                        font-size: 15.5px;
+                        font-weight: 700;
+                        color: #ffffff;
+                      "
+                    >
+                      Post-Event Wrap-Up
+                    </h3>
+                  </div>
+                  <span class="badge badge-blue">Teardown</span>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 6px">
+                  <div
+                    class="role-item"
+                    style="margin-bottom: 0; padding: 6.5px 12px"
+                  >
+                    <span class="role-item-name">Lab Teardown &amp; TSG</span>
+                    <span class="badge badge-slate" style="color: #ffffff"
+                      >Technical Team</span
+                    >
+                  </div>
+                  <div
+                    class="role-item"
+                    style="margin-bottom: 0; padding: 6.5px 12px"
+                  >
+                    <span class="role-item-name">Evaluation Form</span>
+                    <span class="badge badge-emerald">Christian Gene</span>
+                  </div>
+                  <div
+                    class="role-item"
+                    style="margin-bottom: 0; padding: 6.5px 12px"
+                  >
+                    <span class="role-item-name">Digital E-Certificates</span>
+                    <span class="badge badge-indigo">Chielsea</span>
+                  </div>
+                  <div
+                    class="role-item"
+                    style="margin-bottom: 0; padding: 6.5px 12px"
+                  >
+                    <span class="role-item-name">Post-Mortem Review</span>
+                    <span class="badge badge-amber">All Members</span>
+                  </div>
+                </div>
+              </div>
+              <div
+                style="
+                  padding-top: 6px;
+                  border-top: 1px solid var(--border-light);
+                  font-size: 11px;
+                  color: var(--text-muted);
+                  font-family: var(--font-mono);
+                "
+              >
+                Summary debrief &amp; certificate release
+              </div>
+            </div>
+          </div>
+        </section>
+
+<!-- ==========================================
+           SLIDE 17: KEY DISCUSSION ITEMS
+           ========================================== -->
+        <section class="slide" data-slide="17">
+          <div class="slide-header" style="margin-bottom: 18px">
+            <h2 class="slide-h1">Open Items for Floor Alignment</h2>
+          </div>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              gap: 16px;
+              flex: 1;
+            "
+          >
+            <!-- Item 01 -->
+            <div
+              class="card"
+              style="
+                padding: 22px 26px;
+                border-color: rgba(99, 102, 241, 0.25);
+                justify-content: space-between;
+              "
+            >
+              <div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 12px;
+                  "
+                >
+                  <div
+                    style="
+                      width: 28px;
+                      height: 28px;
+                      border-radius: 6px;
+                      background: rgba(99, 102, 241, 0.15);
+                      border: 1px solid rgba(99, 102, 241, 0.3);
+                      color: #a5b4fc;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      font-size: 12px;
+                      font-family: var(--font-mono);
+                      font-weight: 800;
+                    "
+                  >
+                    01
+                  </div>
+                  <span
+                    class="badge badge-amber disc-status-pill"
+                    onclick="toggleStatus(this)"
+                    title="Click to cycle status"
+                    >Open for Review</span
+                  >
+                </div>
+                <h4
+                  style="
+                    font-size: 17.5px;
+                    font-weight: 700;
+                    color: #ffffff;
+                    margin-bottom: 8px;
+                  "
+                >
+                  Year-Level Info Template
+                </h4>
+                <p
+                  style="
+                    font-size: 13.5px;
+                    color: var(--text-secondary);
+                    line-height: 1.5;
+                    margin: 0;
+                  "
+                >
+                  Standardized announcement copy tailored per CpE year level
+                  (1st–4th year) for targeted batch group chat blasts.
+                </p>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  padding-top: 12px;
+                  border-top: 1px solid var(--border-light);
+                  margin-top: 14px;
+                "
+              >
+                <span
+                  class="badge badge-emerald"
+                  style="font-size: 12px; font-weight: 700"
+                  >EJ Kate</span
+                >
+                <span class="badge badge-indigo" style="font-size: 11.5px"
+                  >Action: Draft &amp; Blast Copy</span
+                >
+              </div>
+            </div>
+
+            <!-- Item 02 -->
+            <div
+              class="card"
+              style="
+                padding: 22px 26px;
+                border-color: rgba(245, 158, 11, 0.25);
+                justify-content: space-between;
+              "
+            >
+              <div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 12px;
+                  "
+                >
+                  <div
+                    style="
+                      width: 28px;
+                      height: 28px;
+                      border-radius: 6px;
+                      background: rgba(245, 158, 11, 0.15);
+                      border: 1px solid rgba(245, 158, 11, 0.3);
+                      color: #fcd34d;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      font-size: 12px;
+                      font-family: var(--font-mono);
+                      font-weight: 800;
+                    "
+                  >
+                    02
+                  </div>
+                  <span
+                    class="badge badge-amber disc-status-pill"
+                    onclick="toggleStatus(this)"
+                    title="Click to cycle status"
+                    >Open for Review</span
+                  >
+                </div>
+                <h4
+                  style="
+                    font-size: 17.5px;
+                    font-weight: 700;
+                    color: #ffffff;
+                    margin-bottom: 8px;
+                  "
+                >
+                  Speaker Token of Appreciation
+                </h4>
+                <p
+                  style="
+                    font-size: 13.5px;
+                    color: var(--text-secondary);
+                    line-height: 1.5;
+                    margin: 0;
+                  "
+                >
+                  Finalize appreciation token (framed certificate, department
+                  merch, or token of gratitude) for Sir Mervin.
+                </p>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  padding-top: 12px;
+                  border-top: 1px solid var(--border-light);
+                  margin-top: 14px;
+                "
+              >
+                <span
+                  class="badge badge-amber"
+                  style="font-size: 12px; font-weight: 700"
+                  >Luke Miguel &amp; Chielsea</span
+                >
+                <span class="badge badge-amber" style="font-size: 11.5px"
+                  >Action: Canvas &amp; Allocate</span
+                >
+              </div>
+            </div>
+
+            <!-- Item 03 -->
+            <div
+              class="card"
+              style="
+                padding: 22px 26px;
+                border-color: rgba(56, 189, 248, 0.25);
+                justify-content: space-between;
+              "
+            >
+              <div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 12px;
+                  "
+                >
+                  <div
+                    style="
+                      width: 28px;
+                      height: 28px;
+                      border-radius: 6px;
+                      background: rgba(56, 189, 248, 0.15);
+                      border: 1px solid rgba(56, 189, 248, 0.3);
+                      color: #7dd3fc;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      font-size: 12px;
+                      font-family: var(--font-mono);
+                      font-weight: 800;
+                    "
+                  >
+                    03
+                  </div>
+                  <span
+                    class="badge badge-blue disc-status-pill"
+                    onclick="toggleStatus(this)"
+                    title="Click to cycle status"
+                    >In Progress</span
+                  >
+                </div>
+                <h4
+                  style="
+                    font-size: 17.5px;
+                    font-weight: 700;
+                    color: #ffffff;
+                    margin-bottom: 8px;
+                  "
+                >
+                  TSG Lab Login Coordination
+                </h4>
+                <p
+                  style="
+                    font-size: 13.5px;
+                    color: var(--text-secondary);
+                    line-height: 1.5;
+                    margin: 0;
+                  "
+                >
+                  Coordinate with TSG to ensure all lab computers are
+                  pre-authenticated with student credentials before session
+                  start.
+                </p>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  padding-top: 12px;
+                  border-top: 1px solid var(--border-light);
+                  margin-top: 14px;
+                "
+              >
+                <span
+                  class="badge badge-blue"
+                  style="font-size: 12px; font-weight: 700"
+                  >Rey Emmanuel &amp; Tech Team</span
+                >
+                <span class="badge badge-blue" style="font-size: 11.5px"
+                  >Action: Secure Lab Sign-Off</span
+                >
+              </div>
+            </div>
+
+            <!-- Item 04 -->
+            <div
+              class="card"
+              style="
+                padding: 22px 26px;
+                border-color: rgba(16, 185, 129, 0.25);
+                justify-content: space-between;
+              "
+            >
+              <div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 12px;
+                  "
+                >
+                  <div
+                    style="
+                      width: 28px;
+                      height: 28px;
+                      border-radius: 6px;
+                      background: rgba(16, 185, 129, 0.15);
+                      border: 1px solid rgba(16, 185, 129, 0.3);
+                      color: #6ee7b7;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      font-size: 12px;
+                      font-family: var(--font-mono);
+                      font-weight: 800;
+                    "
+                  >
+                    04
+                  </div>
+                  <span
+                    class="badge badge-emerald disc-status-pill"
+                    onclick="toggleStatus(this)"
+                    title="Click to cycle status"
+                    >Resolved</span
+                  >
+                </div>
+                <h4
+                  style="
+                    font-size: 17.5px;
+                    font-weight: 700;
+                    color: #ffffff;
+                    margin-bottom: 8px;
+                  "
+                >
+                  Sir Mervin Stack Confirmation
+                </h4>
+                <p
+                  style="
+                    font-size: 13.5px;
+                    color: var(--text-secondary);
+                    line-height: 1.5;
+                    margin: 0;
+                  "
+                >
+                  Git CLI + GitHub Desktop confirmed sufficient; no complex
+                  local runtime environments or SDKs required.
+                </p>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  padding-top: 12px;
+                  border-top: 1px solid var(--border-light);
+                  margin-top: 14px;
+                "
+              >
+                <span
+                  class="badge badge-indigo"
+                  style="font-size: 12px; font-weight: 700"
+                  >Adrian Seth</span
+                >
+                <span class="badge badge-emerald" style="font-size: 11.5px"
+                  >Standardized Stack Confirmed</span
+                >
+              </div>
+            </div>
+          </div>
+        </section>
+
+                <!-- ==========================================
+           SLIDE 18: NEXT MEETING (FINAL ANNOUNCEMENT)
+           ========================================== -->
+        <section class="slide" data-slide="18">
+          <div class="hero-pure-center">
+            <span
+              class="badge badge-indigo"
+              style="
+                font-size: 13px;
+                font-weight: 800;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                padding: 6px 16px;
+                margin-bottom: 24px;
+              "
+              >Section 05</span
+            >
+            <h1
+              style="
+                font-size: clamp(38px, 4.8vw, 64px);
+                font-weight: 800;
+                letter-spacing: -0.035em;
+                color: #ffffff;
+                line-height: 1.35;
+                margin: 0;
+                max-width: 1080px;
+              "
+            >
+              We will be having a final meeting on<br />
+              <span
+                style="
+                  background: linear-gradient(135deg, #818cf8 0%, #38bdf8 100%);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  display: inline-block;
+                  padding-bottom: 0.12em;
+                  margin-top: 8px;
+                "
+                >September 26, 2026 (Wednesday)</span
+              >
+            </h1>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Subtle Section Indicator (Bottom Left) -->
+    <div class="floating-section" id="floatingSection">
+      <span class="floating-section-dot"></span>
+      <span id="floatingSectionText">Introduction</span>
+    </div>
+
+    <!-- Minimal Floating HUD (Bottom Right) -->
+    <div class="floating-hud">
+      <div class="floating-counter">
+        <span id="currentSlideNum">1</span> / <span id="totalSlideNum">18</span>
+      </div>
+      <button
+        class="floating-btn"
+        id="btnOverview"
+        title="Slide Overview (Press O)"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+      </button>
+      <button
+        class="floating-btn"
+        id="btnFullscreen"
+        title="Toggle Fullscreen (Press F)"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Grid Overview Modal -->
+    <div class="overview-modal" id="overviewModal">
+      <div class="overview-dialog">
+        <div class="overview-dialog-header">
+          <div class="overview-dialog-title">Slide Navigator (18 Slides)</div>
+          <button class="overview-close-btn" id="btnCloseOverview">
+            &times;
+          </button>
+        </div>
+        <div class="overview-grid" id="overviewGrid">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Navigation Scripts -->
+    <script>
+      const slides = document.querySelectorAll(".slide");
+      const totalSlides = slides.length;
+      let currentSlide = 1;
+
+      const currentNumEl = document.getElementById("currentSlideNum");
+      const floatingSectionEl = document.getElementById("floatingSection");
+      const floatingSectionTextEl = document.getElementById(
+        "floatingSectionText",
+      );
+      const overviewModal = document.getElementById("overviewModal");
+      const overviewGrid = document.getElementById("overviewGrid");
+
+      // Slide Metadata for Section Tracking & Overview
+      const slideMeta = [
+        { num: 1, title: "Git & GitHub Workshop", section: "" },
+        { num: 2, title: "Today's Agenda", section: "" },
+        { num: 3, title: "01 Introduction", section: "Introduction" },
+        { num: 4, title: "Committee Master Folder", section: "Introduction" },
+        { num: 5, title: "Member Engagement", section: "Introduction" },
+        { num: 6, title: "Decision Protocol", section: "Introduction" },
+        { num: 7, title: "02 Event Lifecycle", section: "Event Lifecycle" },
+        { num: 8, title: "Ops: Before & During", section: "Event Lifecycle" },
+        { num: 9, title: "Ops: After the Event", section: "Event Lifecycle" },
+        { num: 10, title: "03 Project Updates", section: "Project Updates" },
+        { num: 11, title: "Tiered Pricing", section: "Project Updates" },
+        { num: 12, title: "Software & Lab Stack", section: "Project Updates" },
+        { num: 13, title: "Assignment Updates?", section: "Project Updates" },
+        { num: 14, title: "Open Discussion", section: "Discussion" },
+        { num: 15, title: "04 Roles & Assignments", section: "Roles & Assignments" },
+        { num: 16, title: "Committee Role Matrix", section: "Roles & Assignments" },
+        { num: 17, title: "Open Items for Floor Alignment", section: "Roles & Assignments" },
+        { num: 18, title: "05 Next Meeting", section: "Next Meeting" }
+      ];
+
+      // Build Grid View
+      function buildControls() {
+        overviewGrid.innerHTML = "";
+
+        slideMeta.forEach((meta) => {
+          const thumb = document.createElement("div");
+          thumb.className = `overview-thumb ${meta.num === 1 ? "active" : ""}`;
+          thumb.innerHTML = `
+          <div class="overview-thumb-num">SLIDE ${String(meta.num).padStart(2, "0")}${meta.section ? " • " + meta.section.toUpperCase() : ""}</div>
+          <div class="overview-thumb-title">${meta.title}</div>
+          <div class="badge badge-slate" style="font-size: 10px; width: fit-content;">Jump to slide</div>
+        `;
+          thumb.onclick = () => {
+            goToSlide(meta.num);
+            closeOverview();
+          };
+          overviewGrid.appendChild(thumb);
+        });
+      }
+
+      // Go to slide
+      function goToSlide(n) {
+        if (n < 1) n = 1;
+        if (n > totalSlides) n = totalSlides;
+        currentSlide = n;
+
+        slides.forEach((slide, idx) => {
+          slide.classList.toggle("active", idx === currentSlide - 1);
+        });
+
+        currentNumEl.textContent = currentSlide;
+
+        // Update Section Indicator (Bottom Left - Hidden on Slide 1 & Slide 2)
+        const currentMeta = slideMeta[currentSlide - 1];
+        if (currentSlide > 2 && currentMeta && currentMeta.section) {
+          floatingSectionTextEl.textContent = currentMeta.section;
+          floatingSectionEl.style.opacity = "0.65";
+          floatingSectionEl.style.visibility = "visible";
+        } else {
+          floatingSectionEl.style.opacity = "0";
+          floatingSectionEl.style.visibility = "hidden";
+        }
+
+        // Update Overview Active State
+        document.querySelectorAll(".overview-thumb").forEach((thumb, idx) => {
+          thumb.classList.toggle("active", idx === currentSlide - 1);
+        });
+      }
+
+      function nextSlide() {
+        goToSlide(currentSlide + 1);
+      }
+      function prevSlide() {
+        goToSlide(currentSlide - 1);
+      }
+
+      function openOverview() {
+        overviewModal.classList.add("open");
+      }
+      function closeOverview() {
+        overviewModal.classList.remove("open");
+      }
+
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+
+      // Checklist Logic
+      function toggleDarkCheck(el) {
+        el.classList.toggle("completed");
+        updateCheckProgress();
+      }
+
+      function updateCheckProgress() {
+        const el = document.getElementById("checklistProgress");
+        if (!el) return;
+        const items = document.querySelectorAll(".check-dark-item");
+        const completed = document.querySelectorAll(
+          ".check-dark-item.completed",
+        ).length;
+        el.textContent = `${completed} / ${items.length} Completed`;
+      }
+
+      // Discussion status cycle
+      function toggleStatus(badge) {
+        if (badge.classList.contains("badge-amber")) {
+          badge.classList.remove("badge-amber");
+          badge.classList.add("badge-emerald");
+          badge.textContent = "Resolved";
+        } else if (badge.classList.contains("badge-emerald")) {
+          badge.classList.remove("badge-emerald");
+          badge.classList.add("badge-blue");
+          badge.textContent = "In Progress";
+        } else {
+          badge.classList.remove("badge-blue");
+          badge.classList.add("badge-amber");
+          badge.textContent = "Open for Review";
+        }
+      }
+
+      // Keyboard Shortcuts
+      document.addEventListener("keydown", (e) => {
+        if (overviewModal.classList.contains("open")) {
+          if (e.key === "Escape" || e.key === "o" || e.key === "O") {
+            closeOverview();
+          }
+          return;
+        }
+
+        if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key === "Home") {
+          e.preventDefault();
+          goToSlide(1);
+        } else if (e.key === "End") {
+          e.preventDefault();
+          goToSlide(totalSlides);
+        } else if (e.key === "o" || e.key === "O") {
+          e.preventDefault();
+          openOverview();
+        } else if (e.key === "f" || e.key === "F") {
+          e.preventDefault();
+          toggleFullscreen();
+        }
+      });
+
+      // Listeners
+      document
+        .getElementById("btnOverview")
+        .addEventListener("click", openOverview);
+      document
+        .getElementById("btnCloseOverview")
+        .addEventListener("click", closeOverview);
+      document
+        .getElementById("btnFullscreen")
+        .addEventListener("click", toggleFullscreen);
+
+      overviewModal.addEventListener("click", (e) => {
+        if (e.target === overviewModal) closeOverview();
+      });
+
+      // Run
+      buildControls();
+      goToSlide(1);
+      updateCheckProgress();
+    </script>
+  </body>
+</html>
