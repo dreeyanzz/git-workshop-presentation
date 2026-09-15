@@ -3587,10 +3587,41 @@
           </div>
         </section>
 
-                <!-- ==========================================
-           SLIDE 18: NEXT MEETING (FINAL ANNOUNCEMENT)
+                        <!-- ==========================================
+           SLIDE 18: DISCUSSION (OPEN FLOOR)
            ========================================== -->
         <section class="slide" data-slide="18">
+          <div class="hero-pure-center">
+            <h1
+              style="
+                font-size: clamp(54px, 6.8vw, 88px);
+                font-weight: 800;
+                letter-spacing: -0.035em;
+                color: #ffffff;
+                line-height: 1.15;
+                margin: 0;
+              "
+            >
+              Open
+              <span
+                style="
+                  background: linear-gradient(135deg, #818cf8 0%, #38bdf8 100%);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  display: inline-block;
+                  padding-bottom: 0.15em;
+                  margin-bottom: -0.15em;
+                "
+                >Discussion</span
+              >
+            </h1>
+          </div>
+        </section>
+
+        <!-- ==========================================
+           SLIDE 19: NEXT MEETING (FINAL ANNOUNCEMENT)
+           ========================================== -->
+        <section class="slide" data-slide="19">
           <div class="hero-pure-center">
             <span
               class="badge badge-indigo"
@@ -3630,6 +3661,18 @@
             </h1>
           </div>
         </section>
+
+        <!-- ==========================================
+           SLIDE 20: END PAGE
+           ========================================== -->
+        <section class="slide" data-slide="20">
+          <div class="hero-pure-center">
+            <h1 class="hero-title-pure">
+              Thank You
+            </h1>
+            <p class="hero-subtitle-pure">Meeting Adjourned</p>
+          </div>
+        </section>
       </div>
     </main>
 
@@ -3642,7 +3685,7 @@
     <!-- Minimal Floating HUD (Bottom Right) -->
     <div class="floating-hud">
       <div class="floating-counter">
-        <span id="currentSlideNum">1</span> / <span id="totalSlideNum">18</span>
+        <span id="currentSlideNum">1</span> / <span id="totalSlideNum">20</span>
       </div>
       <button
         class="floating-btn"
@@ -3683,7 +3726,7 @@
     <div class="overview-modal" id="overviewModal">
       <div class="overview-dialog">
         <div class="overview-dialog-header">
-          <div class="overview-dialog-title">Slide Navigator (18 Slides)</div>
+          <div class="overview-dialog-title">Slide Navigator (20 Slides)</div>
           <button class="overview-close-btn" id="btnCloseOverview">
             &times;
           </button>
@@ -3710,25 +3753,109 @@
 
       // Slide Metadata for Section Tracking & Overview
       const slideMeta = [
-        { num: 1, title: "Git & GitHub Workshop", section: "" },
-        { num: 2, title: "Today's Agenda", section: "" },
-        { num: 3, title: "01 Introduction", section: "Introduction" },
-        { num: 4, title: "Committee Master Folder", section: "Introduction" },
-        { num: 5, title: "Member Engagement", section: "Introduction" },
-        { num: 6, title: "Decision Protocol", section: "Introduction" },
-        { num: 7, title: "02 Event Lifecycle", section: "Event Lifecycle" },
-        { num: 8, title: "Ops: Before & During", section: "Event Lifecycle" },
-        { num: 9, title: "Ops: After the Event", section: "Event Lifecycle" },
-        { num: 10, title: "03 Project Updates", section: "Project Updates" },
-        { num: 11, title: "Tiered Pricing", section: "Project Updates" },
-        { num: 12, title: "Software & Lab Stack", section: "Project Updates" },
-        { num: 13, title: "Assignment Updates?", section: "Project Updates" },
-        { num: 14, title: "Open Discussion", section: "Discussion" },
-        { num: 15, title: "04 Roles & Assignments", section: "Roles & Assignments" },
-        { num: 16, title: "Committee Role Matrix", section: "Roles & Assignments" },
-        { num: 17, title: "Open Items for Floor Alignment", section: "Roles & Assignments" },
-        { num: 18, title: "05 Next Meeting", section: "Next Meeting" }
-      ];
+        
+        {
+                "num": 1,
+                "title": "Git & GitHub Workshop",
+                "section": ""
+        },
+        {
+                "num": 2,
+                "title": "Today's Agenda",
+                "section": ""
+        },
+        {
+                "num": 3,
+                "title": "01 Introduction",
+                "section": "Introduction"
+        },
+        {
+                "num": 4,
+                "title": "Committee Master Folder",
+                "section": "Introduction"
+        },
+        {
+                "num": 5,
+                "title": "Member Engagement",
+                "section": "Introduction"
+        },
+        {
+                "num": 6,
+                "title": "Decision Protocol",
+                "section": "Introduction"
+        },
+        {
+                "num": 7,
+                "title": "02 Event Lifecycle",
+                "section": "Event Lifecycle"
+        },
+        {
+                "num": 8,
+                "title": "Ops: Before & During",
+                "section": "Event Lifecycle"
+        },
+        {
+                "num": 9,
+                "title": "Ops: After the Event",
+                "section": "Event Lifecycle"
+        },
+        {
+                "num": 10,
+                "title": "03 Project Updates",
+                "section": "Project Updates"
+        },
+        {
+                "num": 11,
+                "title": "Tiered Pricing",
+                "section": "Project Updates"
+        },
+        {
+                "num": 12,
+                "title": "Software & Lab Stack",
+                "section": "Project Updates"
+        },
+        {
+                "num": 13,
+                "title": "Assignment Updates?",
+                "section": "Project Updates"
+        },
+        {
+                "num": 14,
+                "title": "Open Discussion",
+                "section": "Discussion"
+        },
+        {
+                "num": 15,
+                "title": "04 Roles & Assignments",
+                "section": "Roles & Assignments"
+        },
+        {
+                "num": 16,
+                "title": "Committee Role Matrix",
+                "section": "Roles & Assignments"
+        },
+        {
+                "num": 17,
+                "title": "Open Items for Floor Alignment",
+                "section": "Roles & Assignments"
+        },
+        {
+                "num": 18,
+                "title": "Open Discussion",
+                "section": "Discussion"
+        },
+        {
+                "num": 19,
+                "title": "05 Next Meeting",
+                "section": "Next Meeting"
+        },
+        {
+                "num": 20,
+                "title": "Thank You",
+                "section": ""
+        }
+
+      ];;
 
       // Build Grid View
       function buildControls() {
@@ -3764,7 +3891,7 @@
 
         // Update Section Indicator (Bottom Left - Hidden on Slide 1 & Slide 2)
         const currentMeta = slideMeta[currentSlide - 1];
-        if (currentSlide > 2 && currentMeta && currentMeta.section) {
+        if (currentSlide > 2 && currentSlide < totalSlides && currentMeta && currentMeta.section) {
           floatingSectionTextEl.textContent = currentMeta.section;
           floatingSectionEl.style.opacity = "0.65";
           floatingSectionEl.style.visibility = "visible";

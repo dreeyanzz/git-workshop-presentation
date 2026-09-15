@@ -13,11 +13,13 @@ This repository contains the complete interactive HTML slide presentation deck d
 - **Dedicated Section Dividers**: Clear cover pages (`Section 01` through `Section 05`) structuring the entire flow.
 - **Committee Role Matrix**: Detailed staffing and committee leads breakdown.
 - **Floor Alignment**: Action item tracking for open deliverables.
+- **Open Floor Discussions**: Dedicated checkpoint slides following Project Updates and Roles Alignment.
 - **Final Meeting Announcement**: Final readiness lock-in scheduled for **September 26, 2026 (Wednesday)**.
+- **Closing Slide**: Minimalist adjournment end page.
 
 ---
 
-## 📑 Slide Deck Outline (18 Slides)
+## 📑 Slide Deck Outline (20 Slides)
 
 | Slide | Type | Section | Title |
 |---|---|---|---|
@@ -34,11 +36,13 @@ This repository contains the complete interactive HTML slide presentation deck d
 | **11** | Content | Project Updates | Tiered Pricing |
 | **12** | Content | Project Updates | Software & Lab Stack |
 | **13** | Content | Project Updates | Assignment Updates? |
-| **14** | Content | Discussion | Open Discussion |
+| **14** | Discussion | Discussion | Open Discussion |
 | **15** | **Cover** | **Roles & Assignments** | **Section 04: Roles & Assignments** |
 | **16** | Content | Roles & Assignments | Committee Role Matrix |
 | **17** | Content | Roles & Assignments | Open Items for Floor Alignment |
-| **18** | **Cover & Announcement** | **Next Meeting** | **Section 05: Next Meeting** (Final Meeting on September 26, 2026) |
+| **18** | **Discussion** | **Discussion** | **Open Discussion (Floor Alignment Review)** |
+| **19** | **Announcement** | **Next Meeting** | **Section 05: Next Meeting** (Final Meeting on September 26, 2026) |
+| **20** | **End Page** | — | **Thank You / Meeting Adjourned** |
 
 ---
 
@@ -50,7 +54,7 @@ This repository contains the complete interactive HTML slide presentation deck d
 | `←` / `Page Up` | Previous Slide |
 | `Home` | First Slide |
 | `End` | Last Slide |
-| `O` | Toggle Grid Overview Navigator (all 18 slides) |
+| `O` | Toggle Grid Overview Navigator (all 20 slides) |
 | `F` | Toggle Fullscreen Mode |
 | `Click on Slide 17 Status Pills` | Cycle status (`Open for Review` → `In Progress` → `Resolved`) |
 
